@@ -72,11 +72,44 @@ import { InjectableStyle } from './injectableStyle';
     const input = new PianoInput(piano, renderer);
     const midiStorage = new MidiStorage(storage);
 
+    let paused = false;
+    const pausePlay = spriteRenderer.addSprite(sign(700, 230));
+    pausePlay.name = 'pause';
+    pausePlay.onClick = () => {
+        if (paused) {
+            player.play();
+            paused = false;
+            pausePlay.name = 'pause';
+        } else {
+            player.pause();
+            pausePlay.name = 'play';
+            paused = true;
+        }
+    };
+
+    const speedMultiplayer = 10;
     const reload = spriteRenderer.addSprite(sign(700, 200));
     reload.name = 'reload';
     reload.onClick = () => {
         player.stop();
         piano.reset();
+        pausePlay.name = 'play';
+        paused = false;
+    };
+    const speedUp = spriteRenderer.addSprite(sign(700, 260));
+    speedUp.name = 'speed up';
+    speedUp.onClick = () => {
+        player.tempo += speedMultiplayer;
+        console.log(player.tempo);
+    };
+    const speedDown = spriteRenderer.addSprite(sign(700, 290));
+    speedDown.name = 'speed down';
+    speedDown.onClick = () => {
+        player.tempo -= speedMultiplayer;
+        if (player.tempo < 0) {
+            player.tempo += speedMultiplayer;
+        }
+        console.log(player.tempo);
     };
 
 

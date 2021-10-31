@@ -14,6 +14,7 @@ export class Menu {
         border-bottom-right-radius: 4px;
         border-bottom-left-radius: 4px;
         margin-left: 2px;
+        user-select: none;
     }
     
     .menu-button {

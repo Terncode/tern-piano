@@ -110,7 +110,7 @@ export class AudioSettings extends Popup {
         const input = document.createElement('input');
         input.type = 'range';
         input.max = max;
-        input.min = '0';
+        input.min = '1';
         input.style.width = '250px';
         const update = () => {
             input.value = getter().toString();

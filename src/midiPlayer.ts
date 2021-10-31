@@ -25,6 +25,9 @@ export class MidiPlayerEx extends MidiPlayer.Player {
             } catch (error) {
             }
         });
+        this.on('endOfFile', () => {
+            piano.reset();
+        })
     }
 
     private debug(on: boolean, tick: number, noteName: number) {
