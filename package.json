@@ -5,7 +5,7 @@
   "main": "./src/index.ts",
   "scripts": {
     "test": "echo \"All test have passed\" && exit 1",
-    "preinstall": "submodules-install",
+    "postinstall": "submodules-install",
     "build:dev": "webpack --mode=development",
     "build": "gulp clean && gulp && webpack --mode=production --node-env=production && gulp compileHTML",
     "build:assets": "gulp",
