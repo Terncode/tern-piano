@@ -102,10 +102,7 @@ export class Piano {
         if (this.piano) {
             this.ternBlaster.pianoSampler.keyDown(this.pianoType, midi, velocity);
         } else {
-            this.ternBlaster.synthEngine.keyDown('sawtooth', MIDI_MAP[midi].noteName);
-            this.ternBlaster.synthEngine.keyDown('sine', MIDI_MAP[midi].noteName);
-            this.ternBlaster.synthEngine.keyDown('square', MIDI_MAP[midi].noteName);
-            this.ternBlaster.synthEngine.keyDown('triangle', MIDI_MAP[midi].noteName);
+            this.ternBlaster.synthEngine.keyDown(this._synthType, MIDI_MAP[midi].noteName);
         }
     }
     async  keyUp(midi: number, velocity: number) {
@@ -117,10 +114,7 @@ export class Piano {
         if (this.piano) {
             this.ternBlaster.pianoSampler.keyUp(this.pianoType, midi, velocity);
         } else {
-            this.ternBlaster.synthEngine.keyUp('sawtooth', MIDI_MAP[midi].noteName);
-            this.ternBlaster.synthEngine.keyUp('sine', MIDI_MAP[midi].noteName);
-            this.ternBlaster.synthEngine.keyUp('square', MIDI_MAP[midi].noteName);
-            this.ternBlaster.synthEngine.keyUp('triangle', MIDI_MAP[midi].noteName);
+            this.ternBlaster.synthEngine.keyUp(this._synthType, MIDI_MAP[midi].noteName);
         }
     }
     animateEntity(sprite: PianoKey, value: boolean) {
