@@ -65,7 +65,7 @@ const serializeAssets = cb => {
 };
 
 function installSubmodule(cb) {
-    exec(`cd ${path.join(process.cwd(), 'Tern-blaster')} && npm i`, (error, stdout, stderr) => {
+    exec(`git submodule update --init --recursive && cd ${path.join(process.cwd(), 'Tern-blaster')} && npm i`, (error, stdout, stderr) => {
         if (error) {
             cb();
             return;
