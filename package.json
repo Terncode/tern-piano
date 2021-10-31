@@ -47,6 +47,6 @@
     "webmidi": "^2.5.3"
   },
   "submodules": [
-    "Tern-blaster/*"
+    "Tern-blaster/**"
   ]
 }
