@@ -5,7 +5,7 @@
   "main": "./src/index.ts",
   "scripts": {
     "test": "echo \"All test have passed\" && exit 1",
-    "postinstall": "cd ./Tern-blaster && npm install",
+    "preinstall": "submodules-install",
     "build:dev": "webpack --mode=development",
     "build": "gulp clean && gulp && webpack --mode=production --node-env=production && gulp compileHTML",
     "build:assets": "gulp",
@@ -42,7 +42,11 @@
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
     "midi-player-js": "^2.0.16",
+    "submodules-install": "^1.0.2",
     "tone": "^14.7.77",
     "webmidi": "^2.5.3"
-  }
+  },
+  "submodules": [
+    "Tern-blaster/*"
+  ]
 }
