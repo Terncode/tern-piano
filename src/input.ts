@@ -1,5 +1,6 @@
 import { Piano } from './piano';
-import { MidiObject, MIDI_MAP, Note } from '../Tern-blaster/src/midiConstants';
+import { MIDI_MAP, } from '../Tern-blaster/src/midiConstants';
+import { MidiObject, Note } from '../Tern-blaster/src/interfaces';
 import { Renderer } from './renderer';
 
 export class PianoInput {

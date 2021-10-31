@@ -1,12 +1,16 @@
 import { Sprite, Renderer } from './renderer';
-import * as easingFunction from './easeFunction';
 
 function defaultEase(x: number) {
     return x;
 }
+const c1 = 1.70158;
+const c3 = c1 + 1;
+function easeOutBack(x: number) {
+    return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
+};
 
 const ease : { [key: string]: (v: number) => number } = {
-    easeOutBack: easingFunction.ease.easeOutBack,
+    easeOutBack: easeOutBack,
     default: defaultEase
 };
 

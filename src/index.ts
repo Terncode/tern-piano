@@ -1,5 +1,5 @@
 import { TernBlaster,  } from '../Tern-blaster/src/audioEngine';
-import { AudioSettings as TCAudioSettings } from '../Tern-blaster/src/volumeHandler';
+import { AudioSettings as TCAudioSettings } from '../Tern-blaster/src/interfaces';
 import { Renderer } from './renderer';
 import { SpriteExtended, SpriteRenderer } from './spriteRenderer';
 import { Piano } from './piano';
@@ -26,9 +26,7 @@ import { InjectableStyle } from './injectableStyle';
     let audioSettingsSetting = await storage.getItem('tern-blaster') as TCAudioSettings;
     if (!audioSettingsSetting) {
         audioSettingsSetting = {
-            ambient: 0,
             master: 100,
-            music: 0,
             piano: 0,
             sprite: 0,
             synth: 5

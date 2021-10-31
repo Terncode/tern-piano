@@ -1,8 +1,9 @@
 import { Renderer } from './renderer';
 import { SpriteRenderer, SpriteExtended } from './spriteRenderer';
-import { MidiObject, MIDI_MAP } from '../Tern-blaster/src/midiConstants';
+import {  MIDI_MAP } from '../Tern-blaster/src/midiConstants';
+import { MidiObject } from '../Tern-blaster/src/interfaces';
 import { TernBlaster } from '../Tern-blaster/src/audioEngine';
-import { Oscillator } from '../Tern-blaster/src/synthEngine';
+import { SynthEngineOscillator } from '../Tern-blaster/src/synthEngine';
 import { Preloader } from './preloader';
 import { assets } from './assets';
 
@@ -17,7 +18,7 @@ export class Piano {
     private y = 20;
     private piano = true;
     private pianoType = '';
-    private _synthType: Oscillator = 'square';
+    private _synthType: SynthEngineOscillator = 'square';
 
     constructor(private preloader: Preloader, private renderer: Renderer, private spriteRenderer: SpriteRenderer, private ternBlaster: TernBlaster) {
 
@@ -50,7 +51,7 @@ export class Piano {
     get isPiano() {
         return  this.piano;
     }
-    changeSynthType(value: Oscillator) {
+    changeSynthType(value: SynthEngineOscillator) {
         this._synthType = value;
     }
     get synthType(){
