@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const lodash = require('lodash');
+const { exec } = require("child_process");
 
 const distPath = path.join(process.cwd(), 'dist');
 function clean(cb) {
@@ -63,8 +64,22 @@ const serializeAssets = cb => {
     cb();
 };
 
+function installSubmodule(cb) {
+    exec(`cd ${path.join(process.cwd(), 'Tern-blaster')} && npm i`, (error, stdout, stderr) => {
+        if (error) {
+            cb();
+            return;
+        }
+        if (stderr) {
+            cb();
+            return;
+        }
+    });
+}
+
 module.exports = {
     clean,
+    postinstall: installSubmodule,
     default: serializeAssets,
     compileHTML,
 };
