@@ -123,7 +123,7 @@ export class SpriteRenderer {
             this.renderer.camera = this.backgroundCam;
             const c = this.renderer.getCanvas();
             let y = 0;
-            for (let x = 0; x < c.width; x++) {
+            for (let x = 0; x < c.width; ) {
                 this.backGroundImage.x = x;
                 this.backGroundImage.y = y;
                 this.renderer.drawSprite(this.backGroundImage);

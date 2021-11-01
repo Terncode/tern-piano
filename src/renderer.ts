@@ -14,7 +14,7 @@ export class Renderer {
         y: 0
     };
 
-    constructor(private customSize = false) {
+    constructor(customSize = false) {
         this.ctx = this.canvas.getContext('2d');
         if (!this.ctx) throw new Error('Canvas render not supported!');
         document.body.appendChild(this.canvas);
@@ -22,6 +22,7 @@ export class Renderer {
             window.addEventListener('resize', this.resize);
             this.resize();
         }
+        this.disableImageSmoothing(this.ctx);
     }
     destroy() {
         window.removeEventListener('resize', this.resize);
@@ -81,4 +82,15 @@ export class Renderer {
     set camera(camera: {x: number, y: number}) {
         this._camera = camera;
     }
+
+    private disableImageSmoothing(context: CanvasRenderingContext2D) {
+        if ('imageSmoothingEnabled' in context) {
+            context.imageSmoothingEnabled = false;
+        } else {
+            (context as any).webkitImageSmoothingEnabled = false;
+            (context as any).mozImageSmoothingEnabled = false;
+            (context as any).msImageSmoothingEnabled = false;
+        }
+    }
+    
 }
