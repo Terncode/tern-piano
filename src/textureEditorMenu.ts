@@ -9,6 +9,8 @@ import { MIDI_MAP } from '../Tern-blaster/src/midiConstants';
 import { MidiObject } from '../Tern-blaster/src/interfaces';
 import { FileInput } from './fileInput';
 import { Storage } from './storage';
+import { MidiSpinners } from './midiSpinners';
+import { Signs } from './signs';
 
 export class TextureEditorMenu {
     private popup: Popup;
@@ -20,17 +22,16 @@ export class TextureEditorMenu {
     }
     `);
     private container = document.createElement('div');
-    constructor(private preloader: Preloader, private storage: Storage, private piano: Piano) {
+    constructor(
+        private preloader: Preloader, 
+        private storage: Storage, 
+        private piano: Piano, 
+        private spinner: MidiSpinners,
+        private spriteRenderer: SpriteRenderer,
+        private signs: Signs,
+        ) {
         this.popup = new Popup(this.container);
-        this.container.classList.add('piano-texturer');
-
-        // this.preloader = preloader;
-
-        // container.append(this.createButton('Edit piano key texture', () => {
-
-
-        //     console.log('as');
-        // }));
+        this.container.classList.add('piano-texturer');;
     }
 
     async init() {
@@ -79,6 +80,30 @@ export class TextureEditorMenu {
                 }
             })
         }))
+        this.container.appendChild(this.createButton('Change spinner', async() => {
+            const image = await this.getImage();
+            this.spinner.replaceTexture(false, image.sprite);
+            this.storage.setItem('texture-spinner', image.base64 as string)
+            this.storage.setItem('texture-spinner-title', image.title);
+        }));
+        this.container.appendChild(this.createButton('Change circle', async() => {
+            const image = await this.getImage();
+            this.spinner.replaceTexture(true, image.sprite);
+            this.storage.setItem('texture-circle', image.base64 as string)
+            this.storage.setItem('texture-circle-title', image.title);
+        }));
+        this.container.appendChild(this.createButton('Change background', async() => {
+            const image = await this.getImage();
+            this.spriteRenderer.setBackgroundImage(image.sprite(0, 0));
+            this.storage.setItem('texture-background', image.base64 as string)
+            this.storage.setItem('texture-background-title', image.title);
+        }));
+        this.container.appendChild(this.createButton('Change signs', async() => {
+            const image = await this.getImage();
+            this.signs.replaceTexture(image.sprite);
+            this.storage.setItem('texture-sign', image.base64 as string)
+            this.storage.setItem('texture-sign-title', image.title);
+        }));
         await this.applyTexturesFromStorage();
     } 
     async getImage() {
@@ -103,9 +128,6 @@ export class TextureEditorMenu {
         }
     }
 
-    private generateMidiButtons() {
-       
-    };
 
     private createButton(name: string, fn: (event: MouseEvent) => void) {
         const button = document.createElement('button');
@@ -133,6 +155,36 @@ export class TextureEditorMenu {
                 map.set(base, image);
                 this.piano.replaceTexture(nMidi, await this.renderer.createSprite(image));
             }
+        }
+
+        const spinnerBase64 = await this.storage.getItem('texture-spinner') as string;
+        const spinnerTitle = await this.storage.getItem('texture-spinner-title') as string;
+        if (spinnerBase64 && spinnerTitle) {
+            const img = await this.preloader.loadImage(spinnerBase64, spinnerTitle);
+            this.spinner.replaceTexture(false, await this.renderer.createSprite(img));
+        }
+
+        const circleBase64 = await this.storage.getItem('texture-circle') as string;
+        const circleTitle = await this.storage.getItem('texture-circle-title') as string;
+        if (circleBase64 && circleTitle) {
+            const img = await this.preloader.loadImage(circleBase64, circleTitle);
+            this.spinner.replaceTexture(true, await this.renderer.createSprite(img));
+        }
+        
+        const backgroundBase64 = await this.storage.getItem('texture-background') as string;
+        const backgroundTitle = await this.storage.getItem('texture-background-title') as string;
+        if (backgroundBase64 && backgroundTitle) {
+            const img = await this.preloader.loadImage(backgroundBase64, backgroundTitle);
+            const sprite = await this.renderer.createSprite(img);
+            this.spriteRenderer.setBackgroundImage(sprite(0, 0));
+        }
+
+        const signBackgroundBase64= this.storage.getItem('texture-sign') as string;
+        const signBackgroundTitle= this.storage.getItem('texture-sign-title') as string;
+        if (signBackgroundBase64 && signBackgroundTitle) {
+            const img = await this.preloader.loadImage(signBackgroundBase64, signBackgroundTitle);
+            const sprite = await this.renderer.createSprite(img);
+            this.signs.replaceTexture(sprite);
         }
     }
 }

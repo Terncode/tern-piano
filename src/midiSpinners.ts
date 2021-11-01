@@ -12,6 +12,7 @@ interface Spinner {
 
 export class MidiSpinners {
     private spinners: Spinner[] = [];
+    private circleEntities: SpriteExtended[] = [];
     private now = 0;
     private frame: number;
 
@@ -72,7 +73,9 @@ export class MidiSpinners {
         const rad = 80;
         for (let i = 0; i < 360; i += 20) {
             const l = this.circeEntity(x, y);
-            this.rotateEntity(this.spriteRenderer.addSprite(l), x, y, i, rad);
+            const circleEntity = this.spriteRenderer.addSprite(l);
+            this.rotateEntity(circleEntity, x, y, i, rad);
+            this.circleEntities.push(circleEntity);
         }
         const r1 = this.spriteRenderer.addSprite(this.rotatorEntity(x, y));
         const r2 = this.spriteRenderer.addSprite(this.rotatorEntity(x, y));
@@ -84,5 +87,17 @@ export class MidiSpinners {
         const obj2: Spinner = { deg: rockRad, entity: r2, x, y, rot: 180 };
         this.spinners.push(obj);
         this.spinners.push(obj2);
+    }
+    replaceTexture(circleEntity: boolean, sprite: CreateSprite) {
+        const template = sprite(0, 0);
+        if(circleEntity) {
+            for (const entity of this.circleEntities) {
+                entity.image = template.image;    
+            }
+        } else {
+            for (const spinner of this.spinners) {
+                spinner.entity.image = template.image;
+            }
+        }
     }
 }

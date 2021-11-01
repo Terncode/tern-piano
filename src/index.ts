@@ -15,6 +15,7 @@ import { MIDI, MidiStorage } from './midiStorage';
 import { TextureEditorMenu } from './textureEditorMenu';
 import { saveAs } from 'file-saver';
 import { InjectableStyle } from './injectableStyle';
+import { Signs } from './signs';
 
 (async () => {
     const preload = new Preloader();
@@ -64,16 +65,17 @@ import { InjectableStyle } from './injectableStyle';
     fontMod.use();
 
     spriteRenderer.setBackgroundImage(plank(0, 0));
-    const signs: SpriteExtended[] = [];
+    const midiSigns: SpriteExtended[] = [];
 
 
     const player = new MidiPlayerEx(piano);
     const spinner = new MidiSpinners(spriteRenderer, player, leaf, rock);
     const input = new PianoInput(piano, renderer);
     const midiStorage = new MidiStorage(storage);
+    const signs = new Signs();
 
     let paused = false;
-    const pausePlay = spriteRenderer.addSprite(sign(700, 230));
+    const pausePlay = signs.add(spriteRenderer.addSprite(sign(700, 230)));
     pausePlay.name = 'pause';
     pausePlay.onClick = () => {
         if (paused) {
@@ -88,7 +90,7 @@ import { InjectableStyle } from './injectableStyle';
     };
 
     const speedMultiplayer = 10;
-    const reload = spriteRenderer.addSprite(sign(700, 200));
+    const reload = signs.add(spriteRenderer.addSprite(sign(700, 200)));
     reload.name = 'reload';
     reload.onClick = () => {
         player.stop();
@@ -96,13 +98,13 @@ import { InjectableStyle } from './injectableStyle';
         pausePlay.name = 'play';
         paused = false;
     };
-    const speedUp = spriteRenderer.addSprite(sign(700, 260));
+    const speedUp = signs.add(spriteRenderer.addSprite(sign(700, 260)));
     speedUp.name = 'speed up';
     speedUp.onClick = () => {
         player.tempo += speedMultiplayer;
         console.log(player.tempo);
     };
-    const speedDown = spriteRenderer.addSprite(sign(700, 290));
+    const speedDown = signs.add(spriteRenderer.addSprite(sign(700, 290)));
     speedDown.name = 'speed down';
     speedDown.onClick = () => {
         player.tempo -= speedMultiplayer;
@@ -125,10 +127,11 @@ import { InjectableStyle } from './injectableStyle';
     }
 
     function clearSigns() {
-        for (const sign of signs) {
+        for (const sign of midiSigns) {
             spriteRenderer.removeSprite(sign);
+            signs.remove(sign);
         }
-        signs.length = 0;
+        midiSigns.length = 0;
     }
     function createSynth() {
         clearSigns();
@@ -155,7 +158,8 @@ import { InjectableStyle } from './injectableStyle';
                 player.loadArrayBuffer(midi.data);
                 player.play();
             };
-            signs.push(spriteEx);
+            midiSigns.push(spriteEx);
+            signs.add(spriteEx);
         }
     }
 
@@ -183,7 +187,7 @@ import { InjectableStyle } from './injectableStyle';
         const blob = new Blob([document.getElementsByTagName('html')[0].innerHTML], {type: 'text/plain;charset=utf-8;'});
         saveAs(blob, `${document.title}.html`);
     });
-    const textureEditor = new TextureEditorMenu(preload, storage, piano);
+    const textureEditor = new TextureEditorMenu(preload, storage, piano, spinner, spriteRenderer, signs);
     await textureEditor.init();
     menu.on('texture-editor', async () =>{
         textureEditor.show();
