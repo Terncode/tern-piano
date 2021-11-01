@@ -46,14 +46,14 @@ export class SpriteRenderer {
     constructor(private renderer: Renderer) {}
 
     private canvasHover = (event: MouseEvent) => {
-        const x = event.x;
-        const y = event.y;
+        const x = event.offsetX;
+        const y = event.offsetY;
         this.entityWithName = this.getHoverOverItems(x, y);
     };
 
     private onClick = (event: MouseEvent) => {
-        const x = event.x;
-        const y = event.y;
+        const x = event.offsetX;
+        const y = event.offsetY;
         const items = this.getHoverOverItems(x, y).filter(e => e.onClick).sort(this.sort).reverse();
         if(items[0]) {
             items[0].onClick();

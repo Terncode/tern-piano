@@ -34,7 +34,7 @@ export class Menu {
 
         this.createTab('Add midi', 'load-midi');
         this.createTab('Audio options', 'audio-settings');
-        //this.createTab('Texture editor', 'texture-editor');
+        this.createTab('Texture editor', 'texture-editor');
         this.createTab('Save html copy', 'save-options');
     }
 

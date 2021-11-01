@@ -1,7 +1,7 @@
-import { Renderer } from './renderer';
+import { CreateSprite, Renderer } from './renderer';
 import { SpriteRenderer, SpriteExtended } from './spriteRenderer';
 import {  MIDI_MAP } from '../Tern-blaster/src/midiConstants';
-import { MidiObject } from '../Tern-blaster/src/interfaces';
+import { MidiObject, Note } from '../Tern-blaster/src/interfaces';
 import { TernBlaster } from '../Tern-blaster/src/audioEngine';
 import { SynthEngineOscillator } from '../Tern-blaster/src/synthEngine';
 import { Preloader } from './preloader';
@@ -13,14 +13,18 @@ export interface PianoKey extends SpriteExtended {
     active: boolean;
 }
 export class Piano {
-    private startX = 10;
-    private spriteMap = new Map<number, PianoKey>();
-    private y = 20;
+    private _spriteMap = new Map<number, PianoKey>();
     private piano = true;
     private pianoType = '';
     private _synthType: SynthEngineOscillator = 'square';
 
-    constructor(private preloader: Preloader, private renderer: Renderer, private spriteRenderer: SpriteRenderer, private ternBlaster: TernBlaster) {
+    constructor(private preloader: Preloader,
+         private renderer: Renderer,
+          private spriteRenderer: SpriteRenderer,
+           private ternBlaster: TernBlaster,
+           private startX = 10,
+           private y = 20,
+           ) {
 
         // (async () => {
         //     console.error('====', assets.harp);
@@ -89,12 +93,12 @@ export class Piano {
                 sprite.originalX = sprite.x = ancoredX;
                 sprite.originalY = sprite.y = ancoredY + this.y;
                 //document.body.appendChild(entity);
-                this.spriteMap.set(num, sprite);
+                this._spriteMap.set(num, sprite);
             }
         }
     }
     async keyDown(midi: number, velocity: number) {
-        const sprite = this.spriteMap.get(midi);
+        const sprite = this._spriteMap.get(midi);
         if (sprite) {
             this.animateEntity(sprite, true);
         }
@@ -106,7 +110,7 @@ export class Piano {
         }
     }
     async  keyUp(midi: number, velocity: number) {
-        const sprite = this.spriteMap.get(midi);
+        const sprite = this._spriteMap.get(midi);
         if (sprite) {
             this.animateEntity(sprite, false);
         }
@@ -156,5 +160,18 @@ export class Piano {
         entries.forEach((v,k) => {
             this.keyUp(k, 0);
         });
+    }
+    replaceTexture(midi: number, sprite: CreateSprite) {
+        const target = this._spriteMap.get(midi);
+        if (target) {
+            const newSprite = sprite(target.x, target.y) as PianoKey;
+            target.image = newSprite.image;
+        }
+    }
+    overrideKey(note: number, cb: (key: PianoKey) => void) {
+        const target = this._spriteMap.get(note);
+        if(target) {
+            cb(target);
+        }
     }
 }

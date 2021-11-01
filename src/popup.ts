@@ -10,11 +10,12 @@ export class Popup {
         z-index: 1000;
         min-width: 50px;
         min-height: 50px;
-        max-width: 250;
+        max-width: 300px;
         max-height: 250px;
         overflow: auto;
         border: 1px solid white;
         background: rgba(0, 0, 0, 0.25);
+        overflow: auto;
     }
     `);
 

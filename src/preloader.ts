@@ -7,25 +7,35 @@ export class Preloader {
         return `_${name}`;
     }
 
-    loadAsset(asset: Asset) {
+    loadAsset(asset: Asset, internal = false) {
         if (this.cache.has(this.getInternalAssetName(asset.text))) {
             return this.cache.get(this.getInternalAssetName(asset.text));
         }
         switch (asset.ex) {
             case 'png':
             case 'jpeg':
-                return this.loadImage(asset, true);
+                return this.loadImageAsset(asset, internal);
             case 'mp3':
             case 'wav':
             case 'flac':
-                return this.loadAudio(asset, true);
+                return this.loadAudioAsset(asset, internal);
             default: {
-                return this.loadUnknown(asset, true);
+                return this.loadUnknownAsset(asset, internal);
             }
         }
     }
 
-    private loadUnknown(asset: Asset, internal: boolean): Blob {
+    loadImage(base64: string, name: string): Promise<HTMLImageElement> {
+        const asset= this.createAsset(base64, name);
+        return this.loadAsset(asset);
+    }
+
+    private createAsset(data:string, title: string): Asset {
+        const {ex, text} = this.ex(title);
+        return { data, ex, text };
+    }
+
+    private loadUnknownAsset(asset: Asset, internal: boolean): Blob {
         const cacheName = internal ? this.getInternalAssetName(asset.text) : asset.text;
         if(this.cache.has(cacheName)) {
             return this.cache.get(cacheName);
@@ -36,7 +46,7 @@ export class Preloader {
         return blob;
     }
 
-    private loadImage(asset: Asset, internal: boolean):Promise<HTMLImageElement> {
+    private loadImageAsset(asset: Asset, internal: boolean):Promise<HTMLImageElement> {
         return new Promise<HTMLImageElement>((resolve, reject) => {
             const image = new Image;
             const cacheName = internal ? this.getInternalAssetName(asset.text) : asset.text;
@@ -46,10 +56,15 @@ export class Preloader {
                 this.cache.delete(cacheName);
                 reject(err);
             });
-            image.src = `data:image/${asset.ex};base64,${asset.data}`;
+            if(asset.data.startsWith('data:image')) {
+                image.src = asset.data;
+            } else {
+                image.src = `data:image/${asset.ex};base64,${asset.data}`;
+
+            }
         });
     }
-    private loadAudio(asset: Asset, internal: boolean):Promise<HTMLAudioElement> {
+    private loadAudioAsset(asset: Asset, internal: boolean):Promise<HTMLAudioElement> {
         return new Promise<HTMLAudioElement>((resolve, reject) => {
             const audio = new Audio;
             const cacheName = internal ? this.getInternalAssetName(asset.text) : asset.text;
@@ -61,5 +76,9 @@ export class Preloader {
             });
             audio.src = `data:audio/${asset.ex};base64,${asset.data}`;
         });
+    }
+    private ex(text: string) {
+        const index = text.lastIndexOf('.');
+        return (index === -1) ? {text, ex: ''} : {text: text.slice(0, index), ex: text.slice(index + 1)};
     }
 }

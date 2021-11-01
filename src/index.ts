@@ -12,7 +12,7 @@ import { Menu } from './menu';
 import { Storage } from './storage';
 import { AudioSettings } from './audioSettings';
 import { MIDI, MidiStorage } from './midiStorage';
-//import { TextureEditorMenu } from './textureEditorMenu';
+import { TextureEditorMenu } from './textureEditorMenu';
 import { saveAs } from 'file-saver';
 import { InjectableStyle } from './injectableStyle';
 
@@ -180,14 +180,14 @@ import { InjectableStyle } from './injectableStyle';
         if (!document.body.contains(obj)) {
             document.body.appendChild(obj);
         }
-
         const blob = new Blob([document.getElementsByTagName('html')[0].innerHTML], {type: 'text/plain;charset=utf-8;'});
         saveAs(blob, `${document.title}.html`);
     });
-    // menu.on('texture-editor', () =>{
-    //     const textureEditor = new TextureEditorMenu();
-    //     textureEditor.show();
-    // });
+    const textureEditor = new TextureEditorMenu(preload, storage, piano);
+    await textureEditor.init();
+    menu.on('texture-editor', async () =>{
+        textureEditor.show();
+    });
 
     async function loadMidi() {
         if (!init) {
